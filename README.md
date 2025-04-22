@@ -19,7 +19,9 @@ O projeto consiste em uma aplicação desenvolvida em **C# (ASP.NET)**. Ele incl
 
 Clone o repositório em sua máquina local:
 
-`git clone https://github.com/viniciusmiquelao/AppGestaoDeResiduos.git cd AppGestaoDeResiduos`
+```
+git clone https://github.com/viniciusmiquelao/AppGestaoDeResiduos.git cd AppGestaoDeResiduos
+```
 
 ### 2. Configuração do GitHub Actions
 
@@ -39,13 +41,17 @@ A aplicação está containerizada usando **Docker**. Para construir e rodar o p
 
 Crie a imagem Docker com o comando:
 
-```docker build -t app-gestao-de-residuos .```
+```
+docker build -t app-gestao-de-residuos .
+```
 
 #### 3.2 Rodando a Aplicação
 
 Execute a aplicação utilizando o Docker Compose:
 
-```docker-compose up```
+```
+docker-compose up`
+```
 
 A aplicação estará disponível em `http://localhost:5000`.
 
