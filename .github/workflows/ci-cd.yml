@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Ou a versão do runner que você está utilizando
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
@@ -30,22 +30,45 @@ jobs:
       - name: Build the project
         run: dotnet build --configuration Release
 
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release
+
   deploy_staging:
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/staging' # Garante que o deploy em staging ocorra apenas quando for a branch staging
 
     steps:
-      - name: Deploy to Staging
+      - name: Set up Render CLI
         run: |
-          echo "Deploying to staging server..."
-          # Comandos para deploy no ambiente de staging, ex: push para Docker Hub, deploy em servidor de staging
+          curl -fsSL https://render.com/download/render-cli | bash
+          export PATH=$PATH:$HOME/render-cli
+
+      - name: Authenticate to Render
+        run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
+
+      - name: Deploy to Render Staging
+        run: |
+          render deploy --service your-staging-service-name --branch staging
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   deploy_production:
     runs-on: ubuntu-latest
     needs: deploy_staging
+    if: github.ref == 'refs/heads/main' # Garante que o deploy em produção ocorra apenas quando for a branch main
 
     steps:
-      - name: Deploy to Production
+      - name: Set up Render CLI
         run: |
-          echo "Deploying to production server..."
-          # Comandos para deploy em produção
+          curl -fsSL https://render.com/download/render-cli | bash
+          export PATH=$PATH:$HOME/render-cli
+
+      - name: Authenticate to Render
+        run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
+
+      - name: Deploy to Render Production
+        run: |
+          render deploy --service your-production-service-name --branch main
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
