@@ -53,7 +53,7 @@ Execute a aplicação utilizando o Docker Compose:
 docker-compose up
 ```
 
-A aplicação estará disponível em `http://localhost:5000`.
+A aplicação estará disponível em `http://localhost:3001`.
 
 ### 4. Configuração do Docker Compose
 

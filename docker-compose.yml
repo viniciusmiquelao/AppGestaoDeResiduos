@@ -3,7 +3,7 @@ services:
     build: .
     container_name: gestao_residuos_app
     ports:
-      - "5000:80"
+      - "3001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:

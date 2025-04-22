@@ -10,24 +10,27 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Ou a versão do runner que você está utilizando
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Install libssl dependencies
+        run: sudo apt-get update && sudo apt-get install -y libssl-dev
+
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "5.0" # Substitua pela versão que o seu projeto usa
+          dotnet-version: "8.0" # Ou a versão que você estiver utilizando
 
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Build the project
         run: dotnet build --configuration Release
 
-      - name: Run Tests
+      - name: Run tests
         run: dotnet test --no-build --configuration Release
 
   deploy_staging:
