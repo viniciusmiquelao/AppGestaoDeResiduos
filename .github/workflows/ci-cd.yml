@@ -3,11 +3,12 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-      - staging
+      - main # Gatilho para a execução do pipeline quando houver push para a branch main
+      - staging # Gatilho para a execução do pipeline quando houver push para a branch staging
   pull_request:
     branches:
       - main
+      - staging
   workflow_dispatch: # Permite disparar o workflow manualmente
 
 jobs:
@@ -41,6 +42,7 @@ jobs:
         run: |
           curl -fsSL https://render.com/download/render-cli | bash
           export PATH=$PATH:$HOME/render-cli
+          echo "Render CLI installed and path updated"
 
       - name: Authenticate to Render
         run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
@@ -60,6 +62,7 @@ jobs:
         run: |
           curl -fsSL https://render.com/download/render-cli | bash
           export PATH=$PATH:$HOME/render-cli
+          echo "Render CLI installed and path updated"
 
       - name: Authenticate to Render
         run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
