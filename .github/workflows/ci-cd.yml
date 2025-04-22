@@ -41,8 +41,20 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Install Render CLI via npm
+        run: |
+          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g render-cli
+          render --version  # Verifique se a Render CLI foi instalada corretamente
+
       - name: Authenticate to Render
-        run: git remote add render https://git.render.com/viniciusmiquelao/AppGestaoDeResiduos.git
+        run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
+
+      - name: Checkout staging branch
+        run: |
+          git fetch origin
+          git checkout -b staging origin/staging || git checkout staging  # Cria a branch staging se não existir
 
       - name: Deploy to Render Staging
         run: |
@@ -58,8 +70,20 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Install Render CLI via npm
+        run: |
+          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g render-cli
+          render --version  # Verifique se a Render CLI foi instalada corretamente
+
       - name: Authenticate to Render
-        run: git remote add render https://git.render.com/viniciusmiquelao/AppGestaoDeResiduos.git
+        run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
+
+      - name: Checkout main branch
+        run: |
+          git fetch origin
+          git checkout -b main origin/main || git checkout main  # Cria a branch main se não existir
 
       - name: Deploy to Render Production
         run: |
