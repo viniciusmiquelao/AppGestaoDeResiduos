@@ -50,7 +50,7 @@ docker build -t app-gestao-de-residuos .
 Execute a aplicação utilizando o Docker Compose:
 
 ```
-docker-compose up`
+docker-compose up
 ```
 
 A aplicação estará disponível em `http://localhost:5000`.
