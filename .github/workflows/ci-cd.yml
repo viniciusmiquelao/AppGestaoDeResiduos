@@ -38,11 +38,15 @@ jobs:
     needs: build
 
     steps:
-      - name: Set up Render CLI
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install Render CLI via npm
         run: |
-          curl -fsSL https://render.com/download/render-cli | bash
-          export PATH=$PATH:$HOME/render-cli
-          echo "Render CLI installed and path updated"
+          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g render-cli
+          render --version  # Verifique se a Render CLI foi instalada corretamente
 
       - name: Authenticate to Render
         run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
@@ -58,11 +62,15 @@ jobs:
     needs: deploy_staging
 
     steps:
-      - name: Set up Render CLI
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install Render CLI via npm
         run: |
-          curl -fsSL https://render.com/download/render-cli | bash
-          export PATH=$PATH:$HOME/render-cli
-          echo "Render CLI installed and path updated"
+          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g render-cli
+          render --version  # Verifique se a Render CLI foi instalada corretamente
 
       - name: Authenticate to Render
         run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
