@@ -39,13 +39,13 @@ A aplicação está containerizada usando **Docker**. Para construir e rodar o p
 
 Crie a imagem Docker com o comando:
 
-`docker build -t app-gestao-de-residuos`
+```docker build -t app-gestao-de-residuos .```
 
 #### 3.2 Rodando a Aplicação
 
 Execute a aplicação utilizando o Docker Compose:
 
-`docker-compose up`
+```docker-compose up```
 
 A aplicação estará disponível em `http://localhost:5000`.
 
