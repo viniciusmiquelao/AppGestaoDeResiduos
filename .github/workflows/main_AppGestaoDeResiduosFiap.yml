@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_4962d4885227431bb86b443605da87f2 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_5c3cbceed0be4d10b223da75edb73e21 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_b78c32bb41964e5689bf73cf9d8bfc7d }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_e0f587fe7b2b455c92ff90060e250985 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4962d4885227431bb86b443605da87f2 }}/mcr.microsoft.com/dotnet/aspnet:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_b78c32bb41964e5689bf73cf9d8bfc7d }}/appgestaoderesiduos:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'AppGestaoDeResiduosFiap'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_78871690435f4954bf069871f20cec44 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4962d4885227431bb86b443605da87f2 }}/mcr.microsoft.com/dotnet/aspnet:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_62b704ef018346a2945bbb216fcae6d4 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_b78c32bb41964e5689bf73cf9d8bfc7d }}/appgestaoderesiduos:${{ github.sha }}'
