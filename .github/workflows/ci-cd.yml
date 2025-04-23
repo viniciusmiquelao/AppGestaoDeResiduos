@@ -36,58 +36,37 @@ jobs:
   deploy_staging:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/staging'
+    if: github.ref == 'refs/heads/staging' # Garante que o deploy em staging ocorra apenas quando for a branch staging
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Authenticate to Render
-        run: git remote add render https://git.render.com/viniciusmiquelao/AppGestaoDeResiduos.git
+      - name: Set up Azure Publish Profile
+        run: echo "${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}" > azure_publish_profile.xml
 
-      - name: Fetch remote branches
-        run: git fetch origin # Garante que todas as branches remotas sejam baixadas
-
-      - name: Checkout to staging branch
-        run: |
-          git checkout staging || git checkout -b staging origin/staging  # Cria a branch 'staging' se não existir
-
-      - name: Deploy to Render Staging
-        run: |
-          git push render staging:main  # Push para a branch staging no Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      - name: Deploy to Azure App Service (Staging)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: <your-app-name> # Substitua pelo nome do seu Azure App Service
+          publish-profile: azure_publish_profile.xml
+          package: ./
 
   deploy_production:
     runs-on: ubuntu-latest
+    needs: build
     if: github.ref == 'refs/heads/main' # Garante que o deploy em produção ocorra apenas quando for a branch main
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Install Render CLI via npm
-        run: |
-          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g render-cli
-          render --version  # Verifique se a Render CLI foi instalada corretamente
+      - name: Set up Azure Publish Profile
+        run: echo "${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}" > azure_publish_profile.xml
 
-      - name: Authenticate to Render
-        run: echo ${{ secrets.RENDER_API_KEY }} | render login --api-key
-
-      - name: Fetch remote branches
-        run: git fetch origin # Garante que todas as branches remotas sejam baixadas
-
-      - name: Checkout to main branch
-        run: |
-          git checkout main || git checkout -b main origin/main  # Cria a branch 'main' se não existir
-
-      - name: Set up remote Render repository
-        run: git remote add render https://git.render.com/viniciusmiquelao/AppGestaoDeResiduos.git # Garantir que a URL do Render está correta
-
-      - name: Deploy to Render Production
-        run: |
-          git push render main:main  # Push para a branch main no Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      - name: Deploy to Azure App Service (Production)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: <your-app-name> # Substitua pelo nome do seu Azure App Service
+          publish-profile: azure_publish_profile.xml
+          package: ./
