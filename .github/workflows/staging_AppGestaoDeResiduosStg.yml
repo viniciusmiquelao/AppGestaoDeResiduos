@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8d918982e41d45348e8a7040658c91c5 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_d6ab54beda394216978c563ae6a3ec98 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_4fa4c72245d640aab3828bdb0ba91ae3 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_4dd6fd06efd24b2b9977ddf5a328de77 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8d918982e41d45348e8a7040658c91c5 }}/AppGestaoDeResiduosStg:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4fa4c72245d640aab3828bdb0ba91ae3 }}/appgestaoderesiduosstg:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'AppGestaoDeResiduosStg'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_a1e022b22d234afd86f4c599ffc835ca }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8d918982e41d45348e8a7040658c91c5 }}/AppGestaoDeResiduosStg:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6bd94bed061e425b9bf848494ad52eb3 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4fa4c72245d640aab3828bdb0ba91ae3 }}/appgestaoderesiduosstg:${{ github.sha }}'
