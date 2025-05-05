@@ -25,7 +25,7 @@ jobs:
 
       - name: Restore & Build
         run: |
-          dotnet restore
+          dotnet restore --force
           dotnet build --no-restore
 
       - name: Run Tests
