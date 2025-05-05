@@ -32,17 +32,24 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
+      - name: Install Test Logger
+        run: dotnet tool install --global dotnet-junit
+
       - name: Test
         run: |
-          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx" --logger "junit;LogFileName=test-results.xml"
+          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
         env:
           ASPNETCORE_ENVIRONMENT: Test
+
+      - name: Convert TRX to JUnit
+        run: |
+          dotnet tool run dotnet-junit convert -i "**/test-results.trx" -o "test-results.xml"
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          junit_files: "**/test-results.xml"
+          junit_files: "test-results.xml"
           check_name: "Resultados dos Testes Unitários"
           fail_on: "test failures"
           report_individual_runs: true
