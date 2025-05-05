@@ -9,6 +9,11 @@ on:
       - staging
   workflow_dispatch:
 
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
 jobs:
   test:
     runs-on: "ubuntu-latest"
@@ -32,7 +37,7 @@ jobs:
 
       - name: Test
         run: |
-          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed"
+          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx" --logger "junit;LogFileName=test-results.xml"
         env:
           ASPNETCORE_ENVIRONMENT: Test
 
@@ -40,7 +45,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          junit_files: "**/TestResults/*.xml"
+          junit_files: "**/test-results.xml"
           check_name: "Resultados dos Testes Unitários"
           fail_on: "test failures"
           report_individual_runs: true
