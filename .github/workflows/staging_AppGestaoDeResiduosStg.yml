@@ -21,6 +21,9 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
+      - name: Install TestPlatform
+        run: dotnet tool install --global dotnet-test-platform
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -28,7 +31,8 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        run: |
+          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed"
         env:
           ASPNETCORE_ENVIRONMENT: Test
 
