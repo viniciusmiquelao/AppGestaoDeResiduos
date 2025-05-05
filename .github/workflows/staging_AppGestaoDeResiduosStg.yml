@@ -26,9 +26,6 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Install TestPlatform
-        run: dotnet tool install --global dotnet-test-platform
-
       - name: Restore dependencies
         run: dotnet restore
 
