@@ -16,43 +16,37 @@ permissions:
 
 jobs:
   test:
-    runs-on: "ubuntu-latest"
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "8.0.x"
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore
-
-      - name: Install Test Logger
-        run: dotnet tool install --global dotnet-junit
-
-      - name: Test
+      - name: Restore & build
         run: |
-          dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
-        env:
-          ASPNETCORE_ENVIRONMENT: Test
+          dotnet restore
+          dotnet build --no-restore
 
-      - name: Convert TRX to JUnit
+      - name: Test (TRX + Coverage)
         run: |
-          dotnet tool run dotnet-junit convert -i "**/test-results.trx" -o "test-results.xml"
+          dotnet test --no-build \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx;LogFileName=test-results.trx"
 
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+      - name: Install trx2junit
+        run: dotnet tool install --global trx2junit --version 2.1.0
+
+      - name: Convert TRX → JUnit
+        run: trx2junit "**/test-results.trx"
+
+      - name: Publish JUnit Results
+        uses: dorny/test-reporter@v1
         with:
-          junit_files: "test-results.xml"
-          check_name: "Resultados dos Testes Unitários"
-          fail_on: "test failures"
-          report_individual_runs: true
+          name: JUnit Report
+          path: "**/*.xml"
 
   build:
     runs-on: "ubuntu-latest"
