@@ -15,33 +15,36 @@ public class CaminhaoControllerTests
     private CaminhaoController _controller;
     private ApplicationDbContext _context;
 
-    public CaminhaoControllerTests()
+    private ApplicationDbContext GetContext()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase")
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        _context = new ApplicationDbContext(options);
+        var context = new ApplicationDbContext(options);
 
         // Seed data
-        _context.Caminhoes.AddRange(
+        context.Caminhoes.AddRange(
             new Caminhao { CaminhaoId = 1, Placa = "ABC1234", LocalizacaoId = 1 },
             new Caminhao { CaminhaoId = 2, Placa = "XYZ5678", LocalizacaoId = 2 }
         );
 
-        _context.Localizacoes.AddRange(
+        context.Localizacoes.AddRange(
             new Localizacao { LocalizacaoId = 1, Longitude = (int?)1.0, Latitude = (int?)1.0, DataHora = DateTime.Now },
             new Localizacao { LocalizacaoId = 2, Longitude = (int?)2.0, Latitude = (int?)2.0, DataHora = DateTime.Now }
         );
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
-        _controller = new CaminhaoController(_context);
+        return context;
     }
 
     [Fact]
     public async Task GetAllCaminhoes_ReturnsOkResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var result = await _controller.GetAllCaminhoes();
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var caminhoes = Assert.IsType<List<Caminhao>>(okResult.Value);
@@ -51,6 +54,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task TrackCaminhoes_ReturnsOkResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var result = await _controller.TrackCaminhoes();
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var caminhoes = Assert.IsType<List<Caminhao>>(okResult.Value);
@@ -60,6 +66,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task GetCaminhao_ReturnsNotFoundResult_WhenCaminhaoDoesNotExist()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var result = await _controller.GetCaminhao(999);
         Assert.IsType<NotFoundResult>(result.Result);
     }
@@ -67,6 +76,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task GetCaminhao_ReturnsOkResult_WhenCaminhaoExists()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var result = await _controller.GetCaminhao(1);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var caminhao = Assert.IsType<Caminhao>(okResult.Value);
@@ -76,6 +88,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task AddCaminhao_ReturnsCreatedAtActionResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var caminhao = new Caminhao { CaminhaoId = 3, Placa = "NEW1234", LocalizacaoId = 3 };
         var result = await _controller.AddCaminhao(caminhao);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
@@ -86,6 +101,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task AddOrUpdateCaminhao_UpdatesExistingCaminhao()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var caminhao = new Caminhao { CaminhaoId = 1, Placa = "UPDATED1234", LocalizacaoId = 1 };
         var result = await _controller.AddOrUpdateCaminhao(caminhao);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
@@ -96,6 +114,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task GetColetas_ReturnsOkResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var result = await _controller.GetColetas();
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var coletas = Assert.IsType<List<Coleta>>(okResult.Value);
@@ -105,6 +126,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task ScheduleColeta_ReturnsCreatedAtActionResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var coleta = new Coleta { ColetaId = 1, CaminhaoId = 1 };
         var result = await _controller.ScheduleColeta(coleta);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
@@ -115,6 +139,9 @@ public class CaminhaoControllerTests
     [Fact]
     public async Task PostNotificarUsuario_ReturnsOkResult()
     {
+        _context = GetContext();
+        _controller = new CaminhaoController(_context);
+
         var usuario = new Usuario { UsuarioId = 1, FoiNotificado = false };
         _context.Usuarios.Add(usuario);
         _context.SaveChanges();
